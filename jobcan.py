@@ -8,6 +8,9 @@ from jobcan_settings import EMAIL, PASSWORD
 
 LOGINURL = "https://id.jobcan.jp/users/sign_in?app_key=atd"
 TIMECARDURL = "https://ssl.jobcan.jp/employee"
+STATUS_WORKING = "入室中"
+STATUS_OUTOFFICE = "退室中"
+STATUS_NOTWORK = "未出勤"
 
 
 class Jobcan:
@@ -43,11 +46,14 @@ class Jobcan:
     def work_start(cls):
         cls.__login()
         status = cls.driver.find_element_by_xpath('//*[@id="working_status"]').get_attribute("textContent")
-        if(status == "退室中"):
+        if(status == STATUS_NOTWORK):
             cls.driver.find_element_by_id('adit-button-push').click()
             print("出勤しました")
-        else:
-            print('退勤してません')
+        elif(status == STATUS_OUTOFFICE):
+            print('退勤済みです')
+        elif(status == STATUS_WORKING):
+            print("出勤済みです")
+
         cls.driver.quit()
 
     @classmethod
@@ -59,6 +65,16 @@ class Jobcan:
             print("退勤しました")
         else:
             print('出勤してません')
+
+        if(status == STATUS_WORKING):
+            cls.driver.find_element_by_id('adit-button-push').click()
+            print("退勤しました")
+        elif(status == STATUS_OUTOFFICE):
+            print('退勤済みです')
+        elif(status == STATUS_NOTWORK):
+            print("出勤してません")
+
+
         cls.driver.quit()
 
 
@@ -68,4 +84,6 @@ if __name__ == "__main__":
         Jobcan.work_start()
     elif (args[1] == "end"):
         Jobcan.work_end()
+    else:
+        print('引数("start" or "end")を設定してください')
 
