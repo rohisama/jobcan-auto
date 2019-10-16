@@ -8,7 +8,7 @@ from jobcan_settings import EMAIL, PASSWORD
 
 LOGINURL = "https://id.jobcan.jp/users/sign_in?app_key=atd"
 TIMECARDURL = "https://ssl.jobcan.jp/employee"
-STATUS_WORKING = "入室中"
+STATUS_WORKING = "勤務中"
 STATUS_OUTOFFICE = "退室中"
 STATUS_NOTWORK = "未出勤"
 
