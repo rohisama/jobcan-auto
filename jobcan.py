@@ -71,7 +71,6 @@ class Jobcan:
 
         if(status == STATUS_WORKING):
             cls.driver.find_element_by_id('adit-button-push').click()
-            cls.driver.find_element_by_xpath('//*[@id="jbcid-user-menu"]/ul/li[2]/a').click()
             res = "退勤しました"
         elif(status == STATUS_OUTOFFICE):
             res = '退勤済みです'
@@ -86,9 +85,9 @@ class Jobcan:
 if __name__ == "__main__":
     args = sys.argv
     if (args[1] == "start"):
-        Jobcan.work_start()
+        Jobcan.work_start(EMAIL, PASSWORD)
     elif (args[1] == "end"):
-        Jobcan.work_end()
+        Jobcan.work_end(EMAIL, PASSWORD)
     else:
         print('引数("start" or "end")を設定してください')
 
