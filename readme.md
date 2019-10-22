@@ -62,9 +62,11 @@ python jobcan.py end
 nohup python jobcan-auto.py &
 ~~~
 ### 使い方
-  1. 登録
-    1. botに対してDMで「登録」と送信します。botユーザがいるチャンネルの場合はメンションを付けて「登録」と送信します。
-    1. DMで返信が来るのでメールアドレスとパスワードをスペースで区切って送信します
+  1. 登録  
+    1. botに対してDMで「登録」と送信します。botユーザがいるチャンネルの場合はメンションを付けて「登録」と送信します。  
+    ![registration_1](https://user-images.githubusercontent.com/51410784/67299065-22ed0880-f527-11e9-8de8-226f620f2386.png)  
+    2. DMで返信が来るのでメールアドレスとパスワードをスペースで区切って送信します  
+    ![registration_2](https://user-images.githubusercontent.com/51410784/67299312-74959300-f527-11e9-86d2-03b0f9b91362.png)
   1. 出勤時  
   botに対してDMまたはメンションを付けて「出勤」と送信します
   1. 退勤時  
