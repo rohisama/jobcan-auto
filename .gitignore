@@ -1,0 +1,6 @@
+*.pyc
+*.sqlite
+*.log
+log/*
+slackbot_settings.py
+!.gitkeep

@@ -8,7 +8,7 @@ from jobcan_settings import EMAIL, PASSWORD
 
 LOGINURL = "https://id.jobcan.jp/users/sign_in?app_key=atd"
 TIMECARDURL = "https://ssl.jobcan.jp/employee"
-STATUS_WORKING = "入室中"
+STATUS_WORKING = "勤務中"
 STATUS_OUTOFFICE = "退室中"
 STATUS_NOTWORK = "未出勤"
 
@@ -22,16 +22,16 @@ class Jobcan:
         options.add_argument("--no-sandbox")
         options.add_argument('--lang=ja')
 
-        #cls.driver = webdriver.Chrome(options=options)
-        cls.driver = webdriver.Chrome()
+        cls.driver = webdriver.Chrome(options=options)
+        #cls.driver = webdriver.Chrome()
         cls.driver.get(url)
         cls.driver.set_window_size(1500,1000)
 
     @classmethod
-    def __login(cls):
+    def __login(cls, email=EMAIL, password=PASSWORD):
         cls.__open_page()
-        cls.driver.find_element_by_id('user_email').send_keys(EMAIL)
-        cls.driver.find_element_by_id('user_password').send_keys(PASSWORD)
+        cls.driver.find_element_by_id('user_email').send_keys(email)
+        cls.driver.find_element_by_id('user_password').send_keys(password)
         
         cls.driver.find_element_by_xpath('//*[@id="new_user"]/input[4]').click()
         time.sleep(3)
@@ -43,47 +43,51 @@ class Jobcan:
             cls.driver.switch_to.window(handle_array[1])
 
     @classmethod
-    def work_start(cls):
-        cls.__login()
+    def __logout(cls):
+        cls.driver.find_element_by_id('jbcid-dropdown-button').click()
+        cls.driver.find_element_by_xpath('//*[@id="jbcid-user-menu"]/ul/li[2]/a').click()
+
+
+    @classmethod
+    def work_start(cls, email, password):
+        cls.__login(email, password)
         status = cls.driver.find_element_by_xpath('//*[@id="working_status"]').get_attribute("textContent")
         if(status == STATUS_NOTWORK):
             cls.driver.find_element_by_id('adit-button-push').click()
-            print("出勤しました")
+            res = "出勤しました"
         elif(status == STATUS_OUTOFFICE):
-            print('退勤済みです')
+            res = '退勤済みです'
         elif(status == STATUS_WORKING):
-            print("出勤済みです")
+            res = "出勤済みです"
 
+        cls.__logout()
         cls.driver.quit()
+        return res
 
     @classmethod
-    def work_end(cls):
-        cls.__login()
+    def work_end(cls, email, password):
+        cls.__login(email, password)
         status = cls.driver.find_element_by_xpath('//*[@id="working_status"]').get_attribute("textContent")
-        if(status == "入室中"):
-            cls.driver.find_element_by_id('adit-button-push').click()
-            print("退勤しました")
-        else:
-            print('出勤してません')
 
         if(status == STATUS_WORKING):
             cls.driver.find_element_by_id('adit-button-push').click()
-            print("退勤しました")
+            res = "退勤しました"
         elif(status == STATUS_OUTOFFICE):
-            print('退勤済みです')
+            res = '退勤済みです'
         elif(status == STATUS_NOTWORK):
-            print("出勤してません")
+            res = "出勤してません"
 
-
+        cls.__logout()
         cls.driver.quit()
+        return res
 
 
 if __name__ == "__main__":
     args = sys.argv
     if (args[1] == "start"):
-        Jobcan.work_start()
+        Jobcan.work_start(EMAIL, PASSWORD)
     elif (args[1] == "end"):
-        Jobcan.work_end()
+        Jobcan.work_end(EMAIL, PASSWORD)
     else:
         print('引数("start" or "end")を設定してください')
 
