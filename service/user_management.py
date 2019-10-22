@@ -49,7 +49,7 @@ class UserManagement:
             self._insert_user(user_id)
             return(MESSAGE_REGISTRATION)
         else:
-            if date[0] == STATUS_REGISTERED:
+            if data[0] == STATUS_REGISTERED:
                 return(MESSAGE_ALREADY_REGISTERED)
             else: # STATUS_UNREGISTERED
                 return(MESSAGE_REGISTRATION)
