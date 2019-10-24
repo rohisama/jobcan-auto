@@ -15,8 +15,7 @@ logger = getLogger(__name__)
 
 
 db_name = "user.sqlite"
-cur_dir = os.path.dirname(__file__)
-db_path = f"{cur_dir}/{db_name}".replace('/', os.sep)
+db_path = f"{os.getcwd()}/db/{db_name}".replace('/', os.sep)
 
 STATUS_UNREGISTERED = "UNREGISTERED"
 STATUS_REGISTERED = "REGISTERED"
@@ -67,7 +66,7 @@ class UserManagement:
             if data[0] == STATUS_REGISTERED:
                 return(MESSAGE_ALREADY_REGISTERED)
             else: # STATUS_UNREGISTERED
-                sql = f"UPDATE users set email = \"{email}\", password = \"{password}\", status = \"{STATUS_REGISTERED}\""
+                sql = f"UPDATE users set email = \"{email}\", password = \"{password}\", status = \"{STATUS_REGISTERED}\" WHERE user_id==\"{user_id}\""
                 self.cursor.execute(sql)
                 return(MESSAGE_REGISTERED)
 
