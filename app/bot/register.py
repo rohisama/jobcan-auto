@@ -20,7 +20,7 @@ def start_registration(message):
     reply = um.start_registration(user_id)
     um.release()
 
-    if 'is_channel' in message.channel._body and message.channel._body['is_channel']:
+    if not _is_dm(message):
         message.reply("DMしますね")
         client = message._client
         channel = client.open_dm_channel(user_id)
@@ -32,7 +32,7 @@ def start_registration(message):
 
 @respond_to(r'\A<mailto:.*@.* .*\Z')
 def user_ragistration(message):
-    if 'is_channel' in message.channel._body and message.channel._body['is_channel']:
+    if not _is_dm(message):
         message.reply("DMで教えてください")
 
     user_id = message.user['id']
@@ -41,3 +41,7 @@ def user_ragistration(message):
     reply =  um.user_ragistration(user_id, message_str[0], message_str[1])
     um.release()
     message.send(reply)
+
+
+def _is_dm(message):
+    return 'is_im' in message.channel._body and message.channel._body['is_im']
