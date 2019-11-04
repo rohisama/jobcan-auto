@@ -3,6 +3,9 @@ import os
 import re
 import sqlite3
 import json
+import time
+import datetime
+from threading import Thread
 
 from logging import getLogger
 
@@ -83,6 +86,33 @@ class UserManagement:
             elif(work_type == "end"):
                 return Jobcan.work_end(data[0], data[1])
 
+    def make_reservation(self, user_id, work_type, time):
+        thread = Thread(target=self._reservation_thread, args=(user_id, work_type, time))
+        thread.start()
+
+    def _reservation_thread(self, user_id, work_type, time):
+        now = datetime.datetime.now()
+        reservation_time = self._calc_resavation_time(now, time)
+
+        td = reservation_time - now
+
+        while td.seconds > 5:
+            time.sleep(5)
+            td = reservation_time - datetime.datetime.now()
+
+        self.work(user_id, work_type)       
+
+    def _calc_resavation_time(self, now, time):
+        reservation_hour = int(time.split(':')[0])
+        reservation_min = int(time.split(':')[1])
+
+        if reservation_hour > now.hour or reservation_hour == now.hour and reservation_min >= now.minute:
+            reservation_time = datetime.datetime.strptime(f"{now.year}/{now.month}/{now.day} {reservation_hour}:{reservation_min}", '%Y/%m/%d %H:%M')
+        else:
+            reservation_time = datetime.datetime.strptime(f"{now.year}/{now.month}/{now.day+1} {reservation_hour}:{reservation_min}", '%Y/%m/%d %H:%M')
+
+        logger.info(f"Reservation time is {reservation_time.strftime('%Y-%m-%d %H:%M:%S')}")
+        return reservation_time
 
     def _create_tables(self):
         try:
